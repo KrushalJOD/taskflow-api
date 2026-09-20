@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+test-results/
+eslint-report.json
+audit-report.json
+.env
+*.log

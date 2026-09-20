@@ -1,0 +1,22 @@
+version: "3.8"
+
+# Used by the Jenkins "Deploy" stage to deploy the build artefact to a
+# staging environment on the Jenkins host. Kept separate from the
+# production compose file so staging and production never share a
+# container, port, or environment configuration.
+services:
+  taskflow-staging:
+    image: ${IMAGE_NAME:-taskflow-api}:${IMAGE_TAG:-latest}
+    container_name: taskflow-staging
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=staging
+      - JWT_SECRET=${JWT_SECRET:-staging-secret-change-me}
+      - APP_VERSION=${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 5

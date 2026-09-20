@@ -1,0 +1,22 @@
+# Optional: point a local Prometheus instance at this file to scrape
+# TaskFlow's /metrics endpoint in both staging and production, and to
+# evaluate the alert rules in alert.rules.yml.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert.rules.yml"
+
+scrape_configs:
+  - job_name: "taskflow-staging"
+    static_configs:
+      - targets: ["localhost:3001"]
+        labels:
+          environment: staging
+
+  - job_name: "taskflow-production"
+    static_configs:
+      - targets: ["localhost:3000"]
+        labels:
+          environment: production

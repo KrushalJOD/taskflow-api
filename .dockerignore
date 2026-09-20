@@ -1,0 +1,7 @@
+node_modules
+coverage
+test-results
+.git
+.eslintrc.json
+*.log
+npm-debug.log*

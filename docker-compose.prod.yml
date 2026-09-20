@@ -1,0 +1,21 @@
+version: "3.8"
+
+# Used by the Jenkins "Release" stage to promote a staging-verified image
+# to production, tagged with the release version rather than "latest",
+# so a rollback is just re-running this file with the previous tag.
+services:
+  taskflow-prod:
+    image: ${IMAGE_NAME:-taskflow-api}:${RELEASE_TAG:?RELEASE_TAG is required}
+    container_name: taskflow-prod
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
+      - APP_VERSION=${RELEASE_TAG}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
